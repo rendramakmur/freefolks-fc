@@ -27,7 +27,7 @@ CREATE TABLE user_information(
   ui_verified_at TIMESTAMP,
   ui_created_at TIMESTAMP DEFAULT NOW(),
   ui_created_by INT,
-  ui_updated_at TIMESTAMP DEFAULT NOW(),
+  ui_updated_at TIMESTAMP,
   ui_updated_by INT,
   PRIMARY KEY (ui_id)
 );

@@ -13,3 +13,7 @@ type GameInformation struct {
 	UpdatedAt   time.Time `gorm:"column:gi_updated_at"`
 	UpdatedBy   int       `gorm:"column:gi_updated_by"`
 }
+
+func (GameInformation) TableName() string {
+	return "game_information"
+}

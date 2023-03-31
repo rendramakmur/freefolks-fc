@@ -20,10 +20,14 @@ type UserInformation struct {
 	PostalCode     string    `gorm:"column:ui_postal_code"`
 	BodySize       string    `gorm:"column:ui_body_size"`
 	ActivationCode string    `gorm:"column:ui_activation_code"`
-	EmailStatus    string    `gorm:"column:ui_email_status"`
+	EmailStatus    bool      `gorm:"column:ui_email_status"`
 	VerifiedAt     time.Time `gorm:"column:ui_verified_at"`
 	CreatedAt      time.Time `gorm:"column:ui_created_at"`
 	CreatedBy      int       `gorm:"column:ui_created_by"`
 	UpdatedAt      time.Time `gorm:"column:ui_updated_at"`
 	UpdatedBy      int       `gorm:"column:ui_updated_by"`
+}
+
+func (UserInformation) TableName() string {
+	return "user_information"
 }

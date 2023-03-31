@@ -12,3 +12,7 @@ type PrefferedPosition struct {
 	UpdatedAt         time.Time       `gorm:"column:pp_updated_at"`
 	UpdatedBy         int             `gorm:"column:pp_updated_by"`
 }
+
+func (PrefferedPosition) TableName() string {
+	return "preffered_position"
+}

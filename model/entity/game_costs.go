@@ -13,3 +13,7 @@ type GameCosts struct {
 	UpdatedAt   time.Time `gorm:"column:gcs_updated_at"`
 	UpdatedBy   int       `gorm:"column:gcs_updated_by"`
 }
+
+func (GameCosts) TableName() string {
+	return "game_costs"
+}

@@ -17,3 +17,7 @@ type GameRegisteredPlayer struct {
 	UpdatedAt         time.Time       `gorm:"column:grp_updated_at"`
 	UpdatedBy         int             `gorm:"column:grp_updated_by"`
 }
+
+func (GameRegisteredPlayer) TableName() string {
+	return "game_registered_player"
+}

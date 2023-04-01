@@ -6,7 +6,7 @@ import (
 )
 
 type OnlyDate struct {
-	time.Time
+	*time.Time
 }
 
 func (o *OnlyDate) UnmarshalJSON(input []byte) error {
@@ -16,6 +16,6 @@ func (o *OnlyDate) UnmarshalJSON(input []byte) error {
 		return err
 	}
 
-	o.Time = newTime
+	o.Time = &newTime
 	return nil
 }

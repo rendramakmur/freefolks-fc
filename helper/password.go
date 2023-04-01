@@ -2,14 +2,15 @@ package helper
 
 import "golang.org/x/crypto/bcrypt"
 
-func HashPassword(password string) (string, error) {
+func HashPassword(password string) (*string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	hashedStr := string(hashedPassword)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(hashedPassword), nil
+	return &hashedStr, nil
 }
 
 func CheckHashedPassword(password, hashedPassword string) error {

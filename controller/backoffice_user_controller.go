@@ -41,9 +41,9 @@ func (uc *BackOfficeUserController) Login(c *fiber.Ctx) error {
 	issuedAt := jwt.NewNumericDate(time.Now())
 	expiresAt := jwt.NewNumericDate(time.Now().Add(3 * time.Hour))
 	claims := helper.JwtClaims{
-		UserId:   user.Id,
-		Email:    user.Email,
-		UserType: user.UserType,
+		UserId:   *user.Id,
+		Email:    *user.Email,
+		UserType: *user.UserType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt:  issuedAt,
 			ExpiresAt: expiresAt,

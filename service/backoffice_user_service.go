@@ -15,13 +15,13 @@ func NewBackOfficeUserService(userRepository *repository.UserRepository) *BackOf
 	return &BackOfficeUserService{userRepository}
 }
 
-func (bou *BackOfficeUserService) Login(email string, password string) (*entity.UserInformation, error) {
-	user, err := bou.userRepository.FindByEmail(email)
+func (bou *BackOfficeUserService) Login(email *string, password *string) (*entity.UserInformation, error) {
+	user, err := bou.userRepository.FindByEmail(*email)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := helper.CheckHashedPassword(password, user.Password); err != nil {
+	if err := helper.CheckHashedPassword(*password, *user.Password); err != nil {
 		return nil, err
 	}
 
@@ -29,7 +29,7 @@ func (bou *BackOfficeUserService) Login(email string, password string) (*entity.
 }
 
 func (bou *BackOfficeUserService) CreateUser(cur *backoffice.CreateUserRequest) (*entity.UserInformation, error) {
-	hashedPassword, err := helper.HashPassword(cur.Password)
+	hashedPassword, err := helper.HashPassword(*cur.Password)
 	if err != nil {
 		return nil, err
 	}

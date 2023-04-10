@@ -1,4 +1,4 @@
-package controller
+package user
 
 import (
 	"errors"
@@ -13,7 +13,6 @@ import (
 	response "github.com/rendramakmur/freefolks-fc/model/response/backoffice"
 	"github.com/rendramakmur/freefolks-fc/repository"
 	boUserService "github.com/rendramakmur/freefolks-fc/service/backoffice/user"
-	customValidator "github.com/rendramakmur/freefolks-fc/service/support"
 )
 
 type BackOfficeUserController struct {
@@ -68,11 +67,7 @@ func (uc *BackOfficeUserController) CreateUser(c *fiber.Ctx) error {
 		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, err))
 	}
 
-	validate := validator.New()
-	if errRequest := validate.Struct(createUserRequest); errRequest != nil {
-		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, errRequest))
-	}
-	if msg, err := customValidator.ValidatePassword(createUserRequest.Password); err != nil {
+	if msg, err := boUserService.ValidateCreateUserRequest(createUserRequest, *uc.userRepository); err != nil {
 		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, msg, err))
 	}
 

@@ -1,4 +1,4 @@
-package service
+package user
 
 import (
 	"github.com/rendramakmur/freefolks-fc/helper"

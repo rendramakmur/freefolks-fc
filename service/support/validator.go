@@ -2,7 +2,12 @@ package support
 
 import (
 	"errors"
+	"regexp"
+	"time"
 	"unicode"
+
+	"github.com/rendramakmur/freefolks-fc/helper"
+	"github.com/rendramakmur/freefolks-fc/repository"
 )
 
 func ValidatePassword(password *string) ([]string, error) {
@@ -14,7 +19,7 @@ func ValidatePassword(password *string) ([]string, error) {
 	)
 
 	if password == nil {
-		return messages, errors.New("Password required")
+		return messages, nil
 	}
 
 	for _, char := range *password {
@@ -53,4 +58,68 @@ func ValidatePassword(password *string) ([]string, error) {
 	}
 
 	return messages, errors.New("Password need a valid length & combination")
+}
+
+func ValidateUniqueEmail(email *string, userRepository *repository.UserRepository) error {
+	if email == nil {
+		return nil
+	}
+
+	if isExist := userRepository.ExistByEmail(*email); isExist {
+		return errors.New("Email is already used")
+	}
+
+	return nil
+}
+
+func ValidateAge(bd *time.Time) error {
+	if bd == nil {
+		return nil
+	}
+
+	if helper.GetAge(bd) > 65 {
+		return errors.New("Age can not be more than 65")
+	}
+
+	if helper.GetAge(bd) < 10 {
+		return errors.New("Age can not be less than 10")
+	}
+
+	return nil
+}
+
+func ValidateMobileNumber(number *string) error {
+	if number == nil {
+		return nil
+	}
+
+	pattern := `^0\d{9,12}$`
+	re := regexp.MustCompile(pattern)
+	if !re.MatchString(*number) {
+		return errors.New("Should start with 0 and the length between 9 - 12 digits")
+	}
+
+	return nil
+}
+
+func ValidateName(name *string) error {
+	if name == nil {
+		return nil
+	}
+
+	if len(*name) < 2 {
+		return errors.New("Name should be more than 2 characters")
+	}
+
+	if len(*name) >= 50 {
+		return errors.New("Name should be less than 50 characters")
+	}
+
+	for _, r := range *name {
+		if !unicode.IsLetter(r) {
+			return errors.New("Name should be only contains letter")
+		}
+	}
+
+	return nil
 }

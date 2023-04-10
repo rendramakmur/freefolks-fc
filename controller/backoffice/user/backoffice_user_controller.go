@@ -11,15 +11,18 @@ import (
 	request "github.com/rendramakmur/freefolks-fc/model/request/backoffice"
 	baseResponse "github.com/rendramakmur/freefolks-fc/model/response"
 	response "github.com/rendramakmur/freefolks-fc/model/response/backoffice"
-	"github.com/rendramakmur/freefolks-fc/service"
+	"github.com/rendramakmur/freefolks-fc/repository"
+	boUserService "github.com/rendramakmur/freefolks-fc/service/backoffice/user"
+	customValidator "github.com/rendramakmur/freefolks-fc/service/support"
 )
 
 type BackOfficeUserController struct {
-	userService *service.BackOfficeUserService
+	userService    *boUserService.BackOfficeUserService
+	userRepository *repository.UserRepository
 }
 
-func NewBackOfficeUserController(userService *service.BackOfficeUserService) *BackOfficeUserController {
-	return &BackOfficeUserController{userService}
+func NewBackOfficeUserController(userService *boUserService.BackOfficeUserService, userRepository *repository.UserRepository) *BackOfficeUserController {
+	return &BackOfficeUserController{userService, userRepository}
 }
 
 func (uc *BackOfficeUserController) Login(c *fiber.Ctx) error {
@@ -68,6 +71,9 @@ func (uc *BackOfficeUserController) CreateUser(c *fiber.Ctx) error {
 	validate := validator.New()
 	if errRequest := validate.Struct(createUserRequest); errRequest != nil {
 		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, errRequest))
+	}
+	if msg, err := customValidator.ValidatePassword(createUserRequest.Password); err != nil {
+		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, msg, err))
 	}
 
 	user, err := uc.userService.CreateUser(createUserRequest)

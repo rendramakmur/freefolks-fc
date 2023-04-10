@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/rendramakmur/freefolks-fc/controller"
+	boUserController "github.com/rendramakmur/freefolks-fc/controller/backoffice/user"
 	"github.com/rendramakmur/freefolks-fc/middleware"
 )
 
-func NewBackOfficeUserRoutes(app *fiber.App, userController *controller.BackOfficeUserController) {
+func NewBackOfficeUserRoutes(app *fiber.App, userController *boUserController.BackOfficeUserController) {
 	backOfficeUser := app.Group("/backoffice/")
 	backOfficeUser.Post("/login", userController.Login)
 

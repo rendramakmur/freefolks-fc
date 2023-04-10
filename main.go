@@ -1,12 +1,14 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/rendramakmur/freefolks-fc/config"
-	"github.com/rendramakmur/freefolks-fc/controller"
+	boUserController "github.com/rendramakmur/freefolks-fc/controller/backoffice/user"
 	"github.com/rendramakmur/freefolks-fc/repository"
-	"github.com/rendramakmur/freefolks-fc/route"
-	"github.com/rendramakmur/freefolks-fc/service"
+	boUserRoute "github.com/rendramakmur/freefolks-fc/route/backoffice/user"
+	boUserService "github.com/rendramakmur/freefolks-fc/service/backoffice/user"
 )
 
 func main() {
@@ -19,11 +21,11 @@ func main() {
 	})
 
 	userRepository := repository.NewUserRepository(db)
-	backOfficeUserService := service.NewBackOfficeUserService(userRepository)
-	backOfficeUserController := controller.NewBackOfficeUserController(backOfficeUserService)
-	route.NewBackOfficeUserRoutes(app, backOfficeUserController)
+	backOfficeUserService := boUserService.NewBackOfficeUserService(userRepository)
+	backOfficeUserController := boUserController.NewBackOfficeUserController(backOfficeUserService, userRepository)
+	boUserRoute.NewBackOfficeUserRoutes(app, backOfficeUserController)
 
-	if err := app.Listen(":8080"); err != nil {
+	if err := app.Listen(os.Getenv("APP_PORT")); err != nil {
 		panic(err)
 	}
 }

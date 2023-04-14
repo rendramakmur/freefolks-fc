@@ -21,8 +21,9 @@ func main() {
 	})
 
 	userRepository := repository.NewUserRepository(db)
-	backOfficeUserService := boUserService.NewBackOfficeUserService(userRepository)
-	backOfficeUserController := boUserController.NewBackOfficeUserController(backOfficeUserService, userRepository)
+	globalParamRepo := repository.NewGlobalParamRepository(db)
+	backOfficeUserService := boUserService.NewBackOfficeUserService(userRepository, globalParamRepo)
+	backOfficeUserController := boUserController.NewBackOfficeUserController(backOfficeUserService, userRepository, globalParamRepo)
 	boUserRoute.NewBackOfficeUserRoutes(app, backOfficeUserController)
 
 	if err := app.Listen(os.Getenv("APP_PORT")); err != nil {

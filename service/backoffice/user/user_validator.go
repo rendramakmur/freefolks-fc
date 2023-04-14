@@ -4,12 +4,13 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/rendramakmur/freefolks-fc/helper"
 	backofficeRequest "github.com/rendramakmur/freefolks-fc/model/request/backoffice"
 	"github.com/rendramakmur/freefolks-fc/repository"
 	customValidator "github.com/rendramakmur/freefolks-fc/service/support"
 )
 
-func ValidateCreateUserRequest(request *backofficeRequest.CreateUserRequest, userRepository repository.UserRepository) ([]string, error) {
+func ValidateCreateUserRequest(request *backofficeRequest.CreateUserRequest, userRepository repository.UserRepository, globalParamRepo repository.GlobalParamRepository) ([]string, error) {
 	validate := validator.New()
 
 	if err := validate.Struct(request); err != nil {
@@ -37,6 +38,18 @@ func ValidateCreateUserRequest(request *backofficeRequest.CreateUserRequest, use
 	}
 
 	if err := customValidator.ValidateName(request.LastName); err != nil {
+		return []string{err.Error()}, err
+	}
+
+	if err := customValidator.ValidateGlobalParam(&helper.OccupationSlug, request.Occupation.Id, &globalParamRepo); err != nil {
+		return []string{err.Error()}, err
+	}
+
+	if err := customValidator.ValidateGlobalParam(&helper.BodySizeSlug, request.BodySize.Id, &globalParamRepo); err != nil {
+		return []string{err.Error()}, err
+	}
+
+	if err := customValidator.ValidateGlobalParam(&helper.GenderSlug, request.Gender.Id, &globalParamRepo); err != nil {
 		return []string{err.Error()}, err
 	}
 

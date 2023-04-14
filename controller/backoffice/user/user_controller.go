@@ -16,12 +16,13 @@ import (
 )
 
 type BackOfficeUserController struct {
-	userService    *boUserService.BackOfficeUserService
-	userRepository *repository.UserRepository
+	userService           *boUserService.BackOfficeUserService
+	userRepository        *repository.UserRepository
+	globalParamRepository *repository.GlobalParamRepository
 }
 
-func NewBackOfficeUserController(userService *boUserService.BackOfficeUserService, userRepository *repository.UserRepository) *BackOfficeUserController {
-	return &BackOfficeUserController{userService, userRepository}
+func NewBackOfficeUserController(userService *boUserService.BackOfficeUserService, userRepository *repository.UserRepository, globalParamRepository *repository.GlobalParamRepository) *BackOfficeUserController {
+	return &BackOfficeUserController{userService, userRepository, globalParamRepository}
 }
 
 func (uc *BackOfficeUserController) Login(c *fiber.Ctx) error {
@@ -67,7 +68,7 @@ func (uc *BackOfficeUserController) CreateUser(c *fiber.Ctx) error {
 		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, err))
 	}
 
-	if msg, err := boUserService.ValidateCreateUserRequest(createUserRequest, *uc.userRepository); err != nil {
+	if msg, err := boUserService.ValidateCreateUserRequest(createUserRequest, *uc.userRepository, *uc.globalParamRepository); err != nil {
 		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, msg, err))
 	}
 

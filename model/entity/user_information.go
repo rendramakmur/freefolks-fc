@@ -13,12 +13,12 @@ type UserInformation struct {
 	MobileNumber   *string    `gorm:"column:ui_mobile_number"`
 	Occupation     *int       `gorm:"column:ui_occupation"`
 	DateOfBirth    *time.Time `gorm:"column:ui_date_of_birth"`
-	Gender         *string    `gorm:"column:ui_gender"`
+	Gender         *int       `gorm:"column:ui_gender"`
 	PhotoProfile   *string    `gorm:"column:ui_photo_profile"`
 	Address        *string    `gorm:"column:ui_address"`
 	City           *string    `gorm:"column:ui_city"`
 	PostalCode     *string    `gorm:"column:ui_postal_code"`
-	BodySize       *string    `gorm:"column:ui_body_size"`
+	BodySize       *int       `gorm:"column:ui_body_size"`
 	ActivationCode *string    `gorm:"column:ui_activation_code"`
 	EmailStatus    *bool      `gorm:"column:ui_email_status"`
 	VerifiedAt     *time.Time `gorm:"column:ui_verified_at"`

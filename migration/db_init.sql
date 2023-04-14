@@ -1,9 +1,6 @@
 -- create new database
 CREATE DATABASE `freefolks-fc`;
 
--- Enum Type ui_body_size
-CREATE TYPE body_size AS ENUM('XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL');
-
 -- user_information
 CREATE TABLE user_information(
   ui_id SERIAL NOT NULL,
@@ -16,12 +13,12 @@ CREATE TABLE user_information(
   ui_mobile_number VARCHAR(255),
   ui_occupation INT,
   ui_date_of_birth DATE,
-  ui_gender VARCHAR(255),
+  ui_gender INT,
   ui_photo_profile VARCHAR(255),
   ui_address TEXT,
   ui_city VARCHAR(255),
   ui_postal_code VARCHAR(255),
-  ui_body_size body_size,
+  ui_body_size INT,
   ui_activation_code VARCHAR(255),
   ui_email_status BOOLEAN,
   ui_verified_at TIMESTAMP,
@@ -34,6 +31,8 @@ CREATE TABLE user_information(
 
 -- Comments
 COMMENT ON COLUMN user_information.ui_occupation IS 'Reference to mr_occupation';
+COMMENT ON COLUMN user_information.ui_body_size IS 'Reference to mr_body_size';
+COMMENT ON COLUMN user_information.ui_gender IS 'Reference to mr_gender';
 
 -- Function for ui_updated_at 
 CREATE FUNCTION trigger_ui_updated_at()
@@ -59,7 +58,7 @@ CREATE TABLE preferred_position(
   pp_position INT,
   pp_created_at TIMESTAMP DEFAULT NOW(),
   pp_created_by INT,
-  pp_updated_at TIMESTAMP DEFAULT NOW(),
+  pp_updated_at TIMESTAMP,
   pp_updated_by INT,
   PRIMARY KEY (pp_id),
   FOREIGN KEY (pp_ui_id) REFERENCES user_information(ui_id)
@@ -178,3 +177,47 @@ CREATE TABLE game_registered_player(
   FOREIGN KEY (grp_gd_id) REFERENCES game_data(gd_id),
   FOREIGN KEY (grp_ui_id) REFERENCES user_information(ui_id)
 );
+
+-- =============================================================================================
+
+-- global_param
+CREATE TABLE global_param(
+  gp_id SERIAL NOT NULL,
+  gp_code_id INT,
+  gp_slug VARCHAR(255),
+  gp_name VARCHAR(255),
+  gp_description VARCHAR(255),
+  gp_created_at TIMESTAMP DEFAULT NOW(),
+  gp_updated_at TIMESTAMP,
+  PRIMARY KEY (gp_id)
+);
+
+INSERT INTO global_param(gp_code_id, gp_slug, gp_name, gp_description)
+VALUES
+  (1, 'mr_game_info', 'Game Information Type', 'Peraturan'),
+  (2, 'mr_game_info', 'Game Information Type', 'Ketentuan'),
+  (3, 'mr_game_info', 'Game Information Type', 'Fasilitas'),
+  (1, 'mr_occupation', 'Occupation', 'Pelajar'),
+  (2, 'mr_occupation', 'Occupation', 'Mahasiswa'),
+  (3, 'mr_occupation', 'Occupation', 'Karyawan'),
+  (4, 'mr_occupation', 'Occupation', 'Belum Bekerja'),
+  (1, 'mr_position', 'Player Position', 'Goalkeeper'),
+  (2, 'mr_position', 'Player Position', 'Center Back'),
+  (3, 'mr_position', 'Player Position', 'Right Back'),
+  (4, 'mr_position', 'Player Position', 'Left Back'),
+  (5, 'mr_position', 'Player Position', 'Defensive Midfielder'),
+  (6, 'mr_position', 'Player Position', 'Center Midfielder'),
+  (7, 'mr_position', 'Player Position', 'Attacking Midfielder'),
+  (8, 'mr_position', 'Player Position', 'Right Midfielder'),
+  (9, 'mr_position', 'Player Position', 'Left Midfielder'),
+  (10, 'mr_position', 'Player Position', 'Striker'),
+  (1, 'mr_gender', 'Gender', 'Male'),
+  (2, 'mr_gender', 'Gender', 'Female'),
+  (1, 'mr_body_size', 'Body Size', 'XS'),
+  (2, 'mr_body_size', 'Body Size', 'S'),
+  (3, 'mr_body_size', 'Body Size', 'M'),
+  (4, 'mr_body_size', 'Body Size', 'L'),
+  (5, 'mr_body_size', 'Body Size', 'XL'),
+  (6, 'mr_body_size', 'Body Size', 'XXL'),
+  (7, 'mr_body_size', 'Body Size', 'XXXL');
+

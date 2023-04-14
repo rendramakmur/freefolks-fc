@@ -2,6 +2,7 @@ package support
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"time"
 	"unicode"
@@ -119,6 +120,19 @@ func ValidateName(name *string) error {
 		if !unicode.IsLetter(r) {
 			return errors.New("Name should be only contains letter")
 		}
+	}
+
+	return nil
+}
+
+func ValidateGlobalParam(slug *string, codeId *int, globalParamRepo *repository.GlobalParamRepository) error {
+	if slug == nil || codeId == nil {
+		return nil
+	}
+
+	_, err := globalParamRepo.GetDefaultDataBySlugAndCodeId(*slug, *codeId)
+	if err != nil {
+		return errors.New(fmt.Sprintf("Global param for %s and code %d not found", *slug, *codeId))
 	}
 
 	return nil

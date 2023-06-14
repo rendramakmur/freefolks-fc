@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -59,6 +60,33 @@ func (uc *BackOfficeUserController) Login(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(baseResponse.CreateResponse(fiber.StatusOK, response.BackOfficeLoginResponse{JwtClaims: claims, AccessToken: token}, nil))
+}
+
+func (uc *BackOfficeUserController) GetCustomerList(c *fiber.Ctx) error {
+	userListRequest := new(request.GetUserListRequest)
+
+	pageStr := c.Query("page", "1")
+	offsetStr := c.Query("limit", "10")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, err))
+	}
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, err))
+	}
+
+	userListRequest.Page = page
+	userListRequest.Limit = offset
+	userListRequest.Email = c.Query("email", "")
+
+	paginationResponse, err := uc.userService.GetAllUser(userListRequest)
+	if err != nil {
+		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, err))
+	}
+
+	return c.JSON(baseResponse.CreateResponse(fiber.StatusOK, paginationResponse, nil))
 }
 
 func (uc *BackOfficeUserController) CreateUser(c *fiber.Ctx) error {

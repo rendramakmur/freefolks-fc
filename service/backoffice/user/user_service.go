@@ -7,7 +7,9 @@ import (
 	"github.com/rendramakmur/freefolks-fc/helper"
 	"github.com/rendramakmur/freefolks-fc/model/entity"
 	"github.com/rendramakmur/freefolks-fc/model/request/backoffice"
+	baseResposne "github.com/rendramakmur/freefolks-fc/model/response"
 	response "github.com/rendramakmur/freefolks-fc/model/response/backoffice"
+	"github.com/rendramakmur/freefolks-fc/model/support"
 	"github.com/rendramakmur/freefolks-fc/repository"
 )
 
@@ -104,6 +106,45 @@ func (bou *BackOfficeUserService) CreateUser(cur *backoffice.CreateUserRequest) 
 		EmailStatus:    savedUser.EmailStatus,
 		VerifiedAt:     savedUser.VerifiedAt,
 	}, nil
+}
+
+func (bou *BackOfficeUserService) GetAllUser(gul *backoffice.GetUserListRequest) (*baseResposne.Pagination, error) {
+	users := []response.UserListResponse{}
+	filters := []support.Filter{}
+
+	offset := (gul.Page - 1) * gul.Limit
+	filters = append(filters, support.Filter{Key: "email", Value: gul.Email})
+
+	result, totalPages, itemsCount, err := bou.userRepository.FindAllUser(gul.Page, gul.Limit, offset, filters)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, user := range result {
+		users = append(users, response.UserListResponse{
+			Id:          user.Id,
+			Email:       user.Email,
+			UserType:    user.UserType,
+			FirstName:   user.FirstName,
+			LastName:    user.LastName,
+			EmailStatus: user.EmailStatus,
+		})
+	}
+
+	converted := make([]interface{}, len(users))
+	for i, u := range users {
+		converted[i] = u
+	}
+
+	pagination := baseResposne.Pagination{
+		Page:       gul.Page,
+		Limit:      gul.Limit,
+		TotalPages: *totalPages,
+		TotalItems: *itemsCount,
+		Items:      converted,
+	}
+
+	return &pagination, nil
 }
 
 func generateActivationCode() string {

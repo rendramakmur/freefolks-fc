@@ -22,7 +22,8 @@ func main() {
 
 	userRepository := repository.NewUserRepository(db)
 	globalParamRepo := repository.NewGlobalParamRepository(db)
-	backOfficeUserService := boUserService.NewBackOfficeUserService(userRepository, globalParamRepo)
+	backOfficeBuilder := boUserService.NewBackOfficeUserDetailBuilder(userRepository, globalParamRepo)
+	backOfficeUserService := boUserService.NewBackOfficeUserService(userRepository, globalParamRepo, backOfficeBuilder)
 	backOfficeUserController := boUserController.NewBackOfficeUserController(backOfficeUserService, userRepository, globalParamRepo)
 	boUserRoute.NewBackOfficeUserRoutes(app, backOfficeUserController)
 

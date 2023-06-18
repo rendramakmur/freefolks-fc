@@ -29,11 +29,15 @@ func (gpr *GlobalParamRepository) GetDefaultDataBySlug(slug string) ([]support.D
 	return response, nil
 }
 
-func (gpr *GlobalParamRepository) GetDefaultDataBySlugAndCodeId(slug string, codeId int) (support.DefaultData, error) {
+func (gpr *GlobalParamRepository) GetDefaultDataBySlugAndCodeId(slug string, codeId *int) (support.DefaultData, error) {
 	var result entity.GlobalParam
 
+	if codeId == nil {
+		return support.DefaultData{Id: nil, Name: nil}, nil
+	}
+
 	if err := gpr.db.Where("gp_slug = ? AND gp_code_id = ?", slug, codeId).First(&result).Error; err != nil {
-		return support.DefaultData{Id: result.CodeId, Name: result.Description}, err
+		return support.DefaultData{Id: nil, Name: nil}, err
 	}
 
 	return support.DefaultData{Id: result.CodeId, Name: result.Description}, nil

@@ -23,6 +23,16 @@ func (ur *UserRepository) FindByEmail(email string) (*entity.UserInformation, er
 	return user, nil
 }
 
+func (ur *UserRepository) FindByCustomerNumber(customerNumber string) (*entity.UserInformation, error) {
+	user := new(entity.UserInformation)
+
+	if err := ur.db.First(&user, "ui_customer_number = ?", customerNumber).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (ur *UserRepository) Save(u *entity.UserInformation) (*entity.UserInformation, error) {
 	if err := ur.db.Save(u).Error; err != nil {
 		return nil, err

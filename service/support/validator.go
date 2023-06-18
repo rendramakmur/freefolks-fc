@@ -11,6 +11,14 @@ import (
 	"github.com/rendramakmur/freefolks-fc/repository"
 )
 
+func ValidateMandatoryStringValue(value string, fieldName string) error {
+	if value == "" {
+		return errors.New(fieldName + "is mandatory")
+	}
+
+	return nil
+}
+
 func ValidatePassword(password *string) ([]string, error) {
 	var (
 		messages     []string
@@ -130,7 +138,7 @@ func ValidateGlobalParam(slug *string, codeId *int, globalParamRepo *repository.
 		return nil
 	}
 
-	_, err := globalParamRepo.GetDefaultDataBySlugAndCodeId(*slug, *codeId)
+	_, err := globalParamRepo.GetDefaultDataBySlugAndCodeId(*slug, codeId)
 	if err != nil {
 		return errors.New(fmt.Sprintf("Global param for %s and code %d not found", *slug, *codeId))
 	}

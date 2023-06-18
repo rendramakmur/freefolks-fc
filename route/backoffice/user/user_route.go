@@ -14,7 +14,8 @@ func NewBackOfficeUserRoutes(app *fiber.App, userController *boUserController.Ba
 
 	userManagement := backOfficeUser.Group("/user/", middleware.Auth)
 	userManagement.Get("/", userController.GetCustomerList)
-	userManagement.Get("/:customerNumber", func(c *fiber.Ctx) error {
+	userManagement.Get("/:customerNumber", userController.GetUserDetail)
+	userManagement.Put("/:customerNumber", func(c *fiber.Ctx) error {
 		param := c.Params("customerNumber")
 		return c.JSON(fmt.Sprintf("%v", param))
 	})

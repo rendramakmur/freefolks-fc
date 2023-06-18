@@ -16,10 +16,11 @@ import (
 type BackOfficeUserService struct {
 	userRepository        *repository.UserRepository
 	globalParamRepository *repository.GlobalParamRepository
+	userDetailBuilder     *BackOfficeUserDetailBuilder
 }
 
-func NewBackOfficeUserService(userRepository *repository.UserRepository, globalParamRepository *repository.GlobalParamRepository) *BackOfficeUserService {
-	return &BackOfficeUserService{userRepository, globalParamRepository}
+func NewBackOfficeUserService(userRepository *repository.UserRepository, globalParamRepository *repository.GlobalParamRepository, userDetailBuilder *BackOfficeUserDetailBuilder) *BackOfficeUserService {
+	return &BackOfficeUserService{userRepository, globalParamRepository, userDetailBuilder}
 }
 
 func (bou *BackOfficeUserService) Login(email *string, password *string) (*entity.UserInformation, error) {
@@ -72,17 +73,17 @@ func (bou *BackOfficeUserService) CreateUser(cur *backoffice.CreateUserRequest) 
 		return nil, err
 	}
 
-	occupationData, err := bou.globalParamRepository.GetDefaultDataBySlugAndCodeId(helper.OccupationSlug, *savedUser.Occupation)
+	occupationData, err := bou.globalParamRepository.GetDefaultDataBySlugAndCodeId(helper.OccupationSlug, savedUser.Occupation)
 	if err != nil {
 		return nil, err
 	}
 
-	genderData, err := bou.globalParamRepository.GetDefaultDataBySlugAndCodeId(helper.GenderSlug, *savedUser.Gender)
+	genderData, err := bou.globalParamRepository.GetDefaultDataBySlugAndCodeId(helper.GenderSlug, savedUser.Gender)
 	if err != nil {
 		return nil, err
 	}
 
-	BodySizeData, err := bou.globalParamRepository.GetDefaultDataBySlugAndCodeId(helper.BodySizeSlug, *savedUser.BodySize)
+	BodySizeData, err := bou.globalParamRepository.GetDefaultDataBySlugAndCodeId(helper.BodySizeSlug, savedUser.BodySize)
 	if err != nil {
 		return nil, err
 	}
@@ -106,6 +107,15 @@ func (bou *BackOfficeUserService) CreateUser(cur *backoffice.CreateUserRequest) 
 		EmailStatus:    savedUser.EmailStatus,
 		VerifiedAt:     savedUser.VerifiedAt,
 	}, nil
+}
+
+func (bou *BackOfficeUserService) GetUserDetail(customerNumber *string) (*response.BackOfficeUserDetailResponse, error) {
+	userDetail, err := bou.userDetailBuilder.Build(customerNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return userDetail, nil
 }
 
 func (bou *BackOfficeUserService) GetAllUser(gul *backoffice.GetUserListRequest) (*baseResposne.Pagination, error) {

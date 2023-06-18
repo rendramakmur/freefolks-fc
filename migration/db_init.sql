@@ -219,5 +219,7 @@ VALUES
   (4, 'mr_body_size', 'Body Size', 'L'),
   (5, 'mr_body_size', 'Body Size', 'XL'),
   (6, 'mr_body_size', 'Body Size', 'XXL'),
-  (7, 'mr_body_size', 'Body Size', 'XXXL');
+  (7, 'mr_body_size', 'Body Size', 'XXXL'),
+  (1, 'mr_user_type', 'User Type', 'Back Office'),
+  (2, 'mr_user_type', 'User Type', 'Front Office');
 

@@ -14,6 +14,7 @@ import (
 	response "github.com/rendramakmur/freefolks-fc/model/response/backoffice"
 	"github.com/rendramakmur/freefolks-fc/repository"
 	boUserService "github.com/rendramakmur/freefolks-fc/service/backoffice/user"
+	customValidator "github.com/rendramakmur/freefolks-fc/service/support"
 )
 
 type BackOfficeUserController struct {
@@ -106,4 +107,19 @@ func (uc *BackOfficeUserController) CreateUser(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(baseResponse.CreateResponse(fiber.StatusOK, user, nil))
+}
+
+func (uc *BackOfficeUserController) GetUserDetail(c *fiber.Ctx) error {
+	customerNumber := c.Params("customerNumber")
+
+	if err := customValidator.ValidateMandatoryStringValue(customerNumber, "Customer Number"); err != nil {
+		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, err))
+	}
+
+	userDetail, err := uc.userService.GetUserDetail(&customerNumber)
+	if err != nil {
+		return c.JSON(baseResponse.CreateResponse(fiber.ErrBadRequest.Code, nil, err))
+	}
+
+	return c.JSON(baseResponse.CreateResponse(fiber.StatusOK, userDetail, nil))
 }
